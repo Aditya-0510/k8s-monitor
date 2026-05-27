@@ -2,7 +2,8 @@ package routes
 
 import (
 	"k8s-monitor/internal/handlers"
-
+	"k8s-monitor/internal/prometheus"
+	
 	"github.com/gin-gonic/gin"
 	"k8s.io/client-go/kubernetes"
 
@@ -13,6 +14,7 @@ func SetupRoutes(
 	router *gin.Engine,
 	clientset *kubernetes.Clientset,
 	metricsClient *metricsv.Clientset,
+	promClient *prometheus.Client,
 ) {
 
 	router.GET("/nodes", handlers.GetNodes(clientset))
@@ -20,6 +22,8 @@ func SetupRoutes(
 	router.GET("/namespaces", handlers.GetNamespaces(clientset))
 	router.GET("/deployments", handlers.GetDeployments(clientset))
 	router.GET("/metrics/nodes", handlers.GetNodeMetrics(metricsClient))
-	router.GET("/metrics/pods", handlers.GetPodMetrics(metricsClient),
-)
+	router.GET("/metrics/pods", handlers.GetPodMetrics(metricsClient))
+	router.GET("/ws/metrics",handlers.MetricsWebSocket(metricsClient))
+	router.GET("/ws/events", handlers.EventsWebSocket(clientset))
+	router.GET("/prometheus/cpu-history",handlers.GetCPUHistory(promClient))
 }

@@ -41,11 +41,15 @@ func GetDeployments(clientset *kubernetes.Clientset) gin.HandlerFunc {
 }
 
 func formatDeployment(deployment appsv1.Deployment) gin.H {
+	desiredReplicas := int32(0)
 
+	if deployment.Spec.Replicas != nil {
+		desiredReplicas = *deployment.Spec.Replicas
+	}
 	return gin.H{
 		"name":               deployment.Name,
 		"namespace":          deployment.Namespace,
-		"desiredReplicas":    *deployment.Spec.Replicas,
+		"desiredReplicas":    desiredReplicas,
 		"availableReplicas":  deployment.Status.AvailableReplicas,
 		"readyReplicas":      deployment.Status.ReadyReplicas,
 		"updatedReplicas":    deployment.Status.UpdatedReplicas,

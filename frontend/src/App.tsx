@@ -7,39 +7,34 @@ import PodTable from "./components/tables/PodTable"
 import NodeMemoryChart from "./components/charts/NodeMemoryChart"
 import DeploymentTable from "./components/tables/DeploymentTable"
 import useDashboardData from "./hooks/useDashboardData"
+import useRealtimeMetrics from "./hooks/useRealtimeMetrics"
+import EventFeed from "./components/events/EventFeed"
+import useClusterEvents from "./hooks/useClusterEvents"
+import CpuHistoryChart from "./components/charts/CpuHistoryChart"
+import useCpuHistory from "./hooks/useCpuHistory"
 
 function App() {
   const [search, setSearch] = useState("")
   const [namespace, setNamespace] = useState("all")
   
   const {
-    nodeMetrics,
+    nodeMetrics: initialNodeMetrics,
     podMetrics,
     loading,
     deployments,
     namespaces
   } = useDashboardData()
 
-  if (loading) {
-    return (
-      <div className="p-8 text-white">
-        Loading...
-      </div>
-    )
-  }
+  const cpuHistory = useCpuHistory()
+  const events = useClusterEvents()
+  const realtimeNodes = useRealtimeMetrics()
 
-  const totalCPU =
-    nodeMetrics.reduce(
-      (sum, node) => sum + node.cpuCores,
-      0
-    )
+  const nodeMetrics =
+    realtimeNodes.length > 0
+      ? realtimeNodes
+      : initialNodeMetrics
 
-  const totalMemory =
-    nodeMetrics.reduce(
-      (sum, node) => sum + node.memoryMB,
-      0
-    )
-    const filteredPods = useMemo(() => {
+  const filteredPods = useMemo(() => {
 
     return podMetrics.filter((pod) => {
 
@@ -59,9 +54,31 @@ function App() {
     })
 
   }, [podMetrics, search, namespace])
+  
+  if (loading) {
+    return (
+      <div className="p-8 text-white">
+        Loading...
+      </div>
+    )
+  }
+
+  const totalCPU =
+    nodeMetrics.reduce(
+      (sum, node) => sum + node.cpuCores,
+      0
+    )
+
+  const totalMemory =
+    nodeMetrics.reduce(
+      (sum, node) => sum + node.memoryMB,
+      0
+    )
+    
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-8">
+    <div className="min-h-screen bg-slate-900 text-white">
+       <div className="max-w-[1600px] mx-auto p-8">
 
       <h1 className="text-4xl font-bold mb-8">
         Kubernetes Monitoring Dashboard
@@ -104,9 +121,16 @@ function App() {
         <NodeMemoryChart nodes={nodeMetrics} />
       </div>
 
+      <div className="mb-8">
+        <CpuHistoryChart data={cpuHistory} />
+      </div>
+
       <PodTable pods={filteredPods} />
       <div className="mt-8">
         <DeploymentTable deployments={deployments} />
+      </div>
+
+      <EventFeed events={events} />
       </div>
     </div>
   )

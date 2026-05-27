@@ -29,15 +29,27 @@ function NodeCpuChart({ nodes }: Props) {
 
           <BarChart data={nodes}>
 
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              stroke="#334155"
+              strokeDasharray="3 3"
+            />
 
-            <XAxis dataKey="name" />
+            <XAxis
+              dataKey="name"
+              tick={{ fill: "#94a3b8" }}
+            />
 
-            <YAxis />
+            <YAxis
+              tick={{ fill: "#94a3b8" }}
+            />
 
             <Tooltip />
 
-            <Bar dataKey="cpuCores" />
+            <Bar
+              dataKey="cpuCores"
+              fill="#3b82f6"
+              radius={[8, 8, 0, 0]}
+            />
 
           </BarChart>
 

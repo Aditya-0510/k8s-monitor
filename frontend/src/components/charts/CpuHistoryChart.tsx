@@ -1,20 +1,20 @@
 import {
-  BarChart,
-  Bar,
-  CartesianGrid,
+  LineChart,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  CartesianGrid,
 } from "recharts"
 
-import type { NodeMetric } from "../../types/metrics"
-
 interface Props {
-  nodes: NodeMetric[]
+  data: any[]
 }
 
-function NodeMemoryChart({ nodes }: Props) {
+function CpuHistoryChart({
+  data,
+}: Props) {
 
   return (
     <div className="
@@ -29,17 +29,17 @@ function NodeMemoryChart({ nodes }: Props) {
         font-bold
         mb-4
       ">
-        Memory Usage
+        CPU Usage History
       </h2>
 
-      <div className="h-80">
+      <div className="h-96">
 
         <ResponsiveContainer
           width="100%"
           height="100%"
         >
 
-          <BarChart data={nodes}>
+          <LineChart data={data}>
 
             <CartesianGrid
               stroke="#334155"
@@ -47,7 +47,7 @@ function NodeMemoryChart({ nodes }: Props) {
             />
 
             <XAxis
-              dataKey="name"
+              dataKey="time"
               tick={{ fill: "#94a3b8" }}
             />
 
@@ -57,13 +57,15 @@ function NodeMemoryChart({ nodes }: Props) {
 
             <Tooltip />
 
-            <Bar
-              dataKey="memoryMB"
-              fill="#10b981"
-              radius={[8, 8, 0, 0]}
+            <Line
+              type="monotone"
+              dataKey="cpu"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              dot={false}
             />
 
-          </BarChart>
+          </LineChart>
 
         </ResponsiveContainer>
 
@@ -73,4 +75,4 @@ function NodeMemoryChart({ nodes }: Props) {
   )
 }
 
-export default NodeMemoryChart
+export default CpuHistoryChart
