@@ -1,22 +1,47 @@
 import type { PodMetric } from "../../types/metrics"
+import type { PodDetails } from "../../types/pod"
+
 import StatusBadge from "../common/StatusBadge"
 
 interface Props {
   pods: PodMetric[]
+
+  onSelectPod?: (
+    pod: PodDetails
+  ) => void
 }
 
-function PodTable({ pods }: Props) {
+function PodTable({
+  pods,
+  onSelectPod,
+}: Props) {
 
   return (
-    <div className="bg-slate-800 rounded-2xl p-6 shadow-lg">
+    <div className="
+      bg-slate-800
+      rounded-2xl
+      p-6
+      shadow-lg
+    ">
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="
+        flex
+        items-center
+        justify-between
+        mb-6
+      ">
 
-        <h2 className="text-2xl font-bold">
+        <h2 className="
+          text-2xl
+          font-bold
+        ">
           Pod Metrics
         </h2>
 
-        <div className="text-sm text-slate-400">
+        <div className="
+          text-sm
+          text-slate-400
+        ">
           Total Pods: {pods.length}
         </div>
 
@@ -28,7 +53,12 @@ function PodTable({ pods }: Props) {
 
           <thead>
 
-            <tr className="text-left text-slate-400 border-b border-slate-700">
+            <tr className="
+              text-left
+              text-slate-400
+              border-b
+              border-slate-700
+            ">
 
               <th className="pb-4">
                 Pod Name
@@ -67,14 +97,34 @@ function PodTable({ pods }: Props) {
 
                 <tr
                   key={pod.name}
+
+                  onClick={() =>
+                    onSelectPod?.({
+                      name: pod.name,
+                      namespace: pod.namespace,
+                      node: pod.node,
+                      status: status,
+                      cpuCores: pod.cpuCores,
+                      memoryMB: pod.memoryMB,
+                    })
+                  }
+
                   className="
-                    border-b border-slate-700
+                    border-b
+                    border-slate-700
+
                     hover:bg-slate-700/40
+
                     transition-colors
+
+                    cursor-pointer
                   "
                 >
 
-                  <td className="py-4 font-medium">
+                  <td className="
+                    py-4
+                    font-medium
+                  ">
                     {pod.name}
                   </td>
 
@@ -82,7 +132,8 @@ function PodTable({ pods }: Props) {
 
                     <span className="
                       bg-slate-700
-                      px-3 py-1
+                      px-3
+                      py-1
                       rounded-full
                       text-sm
                     ">

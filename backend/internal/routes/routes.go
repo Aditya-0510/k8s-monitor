@@ -3,7 +3,7 @@ package routes
 import (
 	"k8s-monitor/internal/handlers"
 	"k8s-monitor/internal/prometheus"
-	
+
 	"github.com/gin-gonic/gin"
 	"k8s.io/client-go/kubernetes"
 
@@ -26,4 +26,5 @@ func SetupRoutes(
 	router.GET("/ws/metrics",handlers.MetricsWebSocket(metricsClient))
 	router.GET("/ws/events", handlers.EventsWebSocket(clientset))
 	router.GET("/prometheus/cpu-history",handlers.GetCPUHistory(promClient))
+	router.GET("/ws/logs", handlers.LogsWebSocket(clientset))
 }
