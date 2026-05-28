@@ -8,11 +8,26 @@ import useRealtimeMetrics from "../hooks/useRealtimeMetrics"
 
 import useClusterEvents from "../hooks/useClusterEvents"
 
+import ClusterHealthCard from "../components/health/ClusterHealthCard"
+
+import {
+  calculateClusterHealth,
+} from "../utils/clusterHealth"
+
+import AlertCenter from "../components/alerts/AlertCenter"
+
+import {
+  generateAlerts,
+} from "../utils/alerts"
+
 function Dashboard() {
+
+
 
   const {
     nodeMetrics: initialNodeMetrics,
     podMetrics,
+    deployments
   } = useDashboardData()
 
   const realtimeNodes =
@@ -41,6 +56,19 @@ function Dashboard() {
       0
     )
 
+    const health =
+  calculateClusterHealth(
+    nodeMetrics,
+    podMetrics,
+    deployments || [],
+  )
+
+  const alerts =
+  generateAlerts(
+    nodeMetrics,
+    podMetrics,
+    deployments || [],
+  )
   return (
     <div>
 
@@ -101,7 +129,15 @@ function Dashboard() {
         </div>
 
       </div>
+      <ClusterHealthCard
+  score={health.score}
+  status={health.status}
+  alerts={health.alerts}
+/>
 
+<AlertCenter
+  alerts={alerts}
+/>
       <div className="
         grid
         grid-cols-1

@@ -1,3 +1,8 @@
+export interface ContainerInfo {
+  name: string
+  image: string
+}
+
 export interface PodDetails {
   name: string
   namespace: string
@@ -6,4 +11,8 @@ export interface PodDetails {
 
   cpuCores: number
   memoryMB: number
+
+  restartCount?: number
+
+  containers?: ContainerInfo[]
 }

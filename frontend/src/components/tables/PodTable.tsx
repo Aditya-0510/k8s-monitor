@@ -106,6 +106,8 @@ function PodTable({
                       status: status,
                       cpuCores: pod.cpuCores,
                       memoryMB: pod.memoryMB,
+                      restartCount: pod.restartCount,
+                      containers: pod.containers,
                     })
                   }
 

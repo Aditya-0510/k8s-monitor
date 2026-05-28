@@ -73,7 +73,7 @@ function Logs() {
       </select>
 
       <div className="
-        bg-black
+        bg-[#0d1117]
         rounded-2xl
         p-6
         h-[700px]
@@ -81,19 +81,38 @@ function Logs() {
         font-mono
         text-sm
         border border-slate-800
+        shadow-inner
+        rounded-2xl
       ">
 
         {logs.map((log, index) => (
 
-          <div
-            key={index}
-            className="
-              text-green-400
-              mb-1
-            "
-          >
-            {log}
-          </div>
+         <div
+  key={index}
+  className={`
+    mb-1
+    whitespace-pre-wrap
+    break-words
+    leading-6
+
+    ${
+      log.includes("ERROR")
+        ? "text-red-400"
+
+      : log.includes("WARN")
+        ? "text-yellow-400"
+
+      : log.includes("INFO")
+        ? "text-blue-400"
+
+      : "text-green-400"
+    }
+  `}
+>
+
+  {log}
+
+</div>
 
         ))}
 

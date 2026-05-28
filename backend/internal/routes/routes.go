@@ -22,7 +22,7 @@ func SetupRoutes(
 	router.GET("/namespaces", handlers.GetNamespaces(clientset))
 	router.GET("/deployments", handlers.GetDeployments(clientset))
 	router.GET("/metrics/nodes", handlers.GetNodeMetrics(metricsClient))
-	router.GET("/metrics/pods", handlers.GetPodMetrics(metricsClient))
+	router.GET("/metrics/pods", handlers.GetPodMetrics(clientset, metricsClient))
 	router.GET("/ws/metrics",handlers.MetricsWebSocket(metricsClient))
 	router.GET("/ws/events", handlers.EventsWebSocket(clientset))
 	router.GET("/prometheus/cpu-history",handlers.GetCPUHistory(promClient))
