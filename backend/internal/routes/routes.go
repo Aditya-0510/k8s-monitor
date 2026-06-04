@@ -27,4 +27,5 @@ func SetupRoutes(
 	router.GET("/ws/events", handlers.EventsWebSocket(clientset))
 	router.GET("/prometheus/cpu-history",handlers.GetCPUHistory(promClient))
 	router.GET("/ws/logs", handlers.LogsWebSocket(clientset))
+	router.POST("/deployments/scale", handlers.ScaleDeployment(clientset))
 }

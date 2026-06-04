@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import api from "../services/api"
 import type { NodeMetric, PodMetric } from "../types/metrics"
+import type { DeploymentMetric } from "../types/deployments"
 
 function useDashboardData() {
 
   const [nodeMetrics, setNodeMetrics] = useState<NodeMetric[]>([])
   const [podMetrics, setPodMetrics] = useState<PodMetric[]>([])
-  const [deployments, setDeployments] = useState([])
+  const [deployments, setDeployments] = useState<DeploymentMetric[]>([])
   const [loading, setLoading] = useState(true)
   const [namespaces, setNamespaces] = useState<string[]>([])
 
