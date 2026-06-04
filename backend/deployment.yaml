@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: backend
+  namespace: k8s-monitor
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      serviceAccountName: k8s-monitor-backend
+      
+      containers:
+        - name: backend
+
+          image: 
+
+          ports:
+            - containerPort: 8080

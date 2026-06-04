@@ -1,0 +1,44 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+
+metadata:
+  name: k8s-monitor-role
+
+rules:
+
+# Core Resources
+
+- apiGroups: [""]
+  resources:
+    - pods
+    - pods/log
+    - services
+    - namespaces
+    - nodes
+    - events
+  verbs:
+    - get
+    - list
+    - watch
+
+# Apps Resources
+
+- apiGroups: ["apps"]
+  resources:
+    - deployments
+  verbs:
+    - get
+    - list
+    - watch
+    - update
+    - patch
+
+# Metrics Server
+
+- apiGroups: ["metrics.k8s.io"]
+  resources:
+    - pods
+    - nodes
+  verbs:
+    - get
+    - list

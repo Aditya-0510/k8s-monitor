@@ -16,3 +16,10 @@ kubernetes   (minikube)
 docker
 grafana
 prometheus
+
+
+
+docker build -t k8s-monitor-frontend .
+docker run -p 5173:80 k8s-monitor-frontend
+
+docker build -t k8s-monitor-backend .
