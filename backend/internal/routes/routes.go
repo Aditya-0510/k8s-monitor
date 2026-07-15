@@ -17,6 +17,19 @@ func SetupRoutes(
 	promClient *prometheus.Client,
 ) {
 
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"service": "k8s-monitor-backend",
+			"status":  "running",
+		})
+	})
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "healthy",
+		})
+	})
+	
 	router.GET("/nodes", handlers.GetNodes(clientset))
 	router.GET("/pods", handlers.GetPods(clientset))
 	router.GET("/namespaces", handlers.GetNamespaces(clientset))
