@@ -23,7 +23,7 @@ spec:
       containers:
         - name: backend
 
-          image: 
+          image: saiaditya10/k8s-monitor-backend:latest
 
           ports:
             - containerPort: 8080

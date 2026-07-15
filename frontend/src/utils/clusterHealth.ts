@@ -1,11 +1,5 @@
-import type {
-  PodMetric,
-  NodeMetric,
-} from "../types/metrics"
-
-import type {
-  DeploymentMetric,
-} from "../types/deployments"
+import type { PodMetric, NodeMetric } from "../types/metrics"
+import type { DeploymentMetric } from "../types/deployments"
 
 interface Result {
   score: number
@@ -23,8 +17,6 @@ export function calculateClusterHealth(
 
   const alerts: string[] = []
 
-  // HIGH CPU
-
   const highCpuNodes =
     nodes.filter(
       (node) => node.cpuCores > 2
@@ -38,8 +30,6 @@ export function calculateClusterHealth(
       `High CPU usage on ${highCpuNodes.length} node(s)`
     )
   }
-
-  // HIGH MEMORY
 
   const highMemoryNodes =
     nodes.filter(
@@ -55,8 +45,6 @@ export function calculateClusterHealth(
     )
   }
 
-  // POD RESTARTS
-
   const restartingPods =
     pods.filter(
       (pod) => pod.restartCount > 0
@@ -70,8 +58,6 @@ export function calculateClusterHealth(
       `${restartingPods.length} pod(s) restarting`
     )
   }
-
-  // FAILED PODS
 
   const failedPods =
     pods.filter(
@@ -87,8 +73,6 @@ export function calculateClusterHealth(
       `${failedPods.length} unhealthy pod(s)`
     )
   }
-
-  // DEPLOYMENT HEALTH
 
   const unhealthyDeployments =
     deployments.filter(

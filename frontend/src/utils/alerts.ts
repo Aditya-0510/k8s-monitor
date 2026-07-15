@@ -1,15 +1,6 @@
-import type {
-  NodeMetric,
-  PodMetric,
-} from "../types/metrics"
-
-import type {
-  DeploymentMetric,
-} from "../types/deployments"
-
-import type {
-  Alert,
-} from "../types/alerts"
+import type { NodeMetric, PodMetric } from "../types/metrics"
+import type { DeploymentMetric } from "../types/deployments"
+import type { Alert } from "../types/alerts"
 
 export function generateAlerts(
   nodes: NodeMetric[],
@@ -18,8 +9,6 @@ export function generateAlerts(
 ): Alert[] {
 
   const alerts: Alert[] = []
-
-  // HIGH CPU
 
   nodes.forEach((node) => {
 
@@ -39,8 +28,6 @@ export function generateAlerts(
     }
   })
 
-  // HIGH MEMORY
-
   nodes.forEach((node) => {
 
     if (node.memoryMB > 7000) {
@@ -58,8 +45,6 @@ export function generateAlerts(
       })
     }
   })
-
-  // RESTARTING PODS
 
   pods.forEach((pod) => {
 
@@ -79,8 +64,6 @@ export function generateAlerts(
     }
   })
 
-  // FAILED PODS
-
   pods.forEach((pod) => {
 
     if (pod.status !== "Running") {
@@ -98,8 +81,6 @@ export function generateAlerts(
       })
     }
   })
-
-  // DEPLOYMENT ISSUES
 
   deployments.forEach((deployment) => {
 
