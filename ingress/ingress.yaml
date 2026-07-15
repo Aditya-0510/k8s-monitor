@@ -5,39 +5,38 @@ metadata:
   name: k8s-monitor
   namespace: k8s-monitor
 
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
 spec:
   ingressClassName: traefik
+
+  tls:
+    - hosts:
+        - k8s-dashboard.saiaditya.online
+        - k8s-api.saiaditya.online
+      secretName: k8s-monitor-tls
 
   rules:
 
     - host: k8s-dashboard.saiaditya.online
-
       http:
-
         paths:
-
           - path: /
             pathType: Prefix
-
             backend:
               service:
                 name: frontend
-
                 port:
                   number: 80
 
     - host: k8s-api.saiaditya.online
-
       http:
-
         paths:
-
           - path: /
             pathType: Prefix
-
             backend:
               service:
                 name: backend
-
                 port:
                   number: 8080

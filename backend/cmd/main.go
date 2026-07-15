@@ -38,5 +38,5 @@ func main() {
 		promClient,
 	)
 
-	router.Run(":3000")
+	router.Run(":8080")
 }
