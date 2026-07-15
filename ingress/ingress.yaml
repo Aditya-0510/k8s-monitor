@@ -10,7 +10,7 @@ spec:
 
   rules:
 
-    - host: dashboard.yourdomain.com
+    - host: k8s-dashboard.saiaditya.online
 
       http:
 
@@ -26,7 +26,7 @@ spec:
                 port:
                   number: 80
 
-    - host: api.yourdomain.com
+    - host: k8s-api.saiaditya.online
 
       http:
 
@@ -40,4 +40,4 @@ spec:
                 name: backend
 
                 port:
-                  number: 3000
+                  number: 8080
