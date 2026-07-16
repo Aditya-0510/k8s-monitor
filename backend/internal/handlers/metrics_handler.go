@@ -72,6 +72,23 @@ func GetPodMetrics(
 
 	return func(c *gin.Context) {
 
+		// Get all pods
+		pods, err := clientset.
+			CoreV1().
+			Pods("").
+			List(
+				context.TODO(),
+				metav1.ListOptions{},
+			)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		// Get metrics for running pods
 		metrics, err := metricsClient.
 			MetricsV1beta1().
 			PodMetricses("").
@@ -81,22 +98,23 @@ func GetPodMetrics(
 			)
 
 		if err != nil {
-
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
 			})
-
 			return
 		}
 
-		var podMetrics []gin.H
+		// Map metrics by namespace/pod name
+		metricMap := make(map[string]interface{})
 
-		for _, pod := range metrics.Items {
+		for _, metric := range metrics.Items {
+
+			key := metric.Namespace + "/" + metric.Name
 
 			var totalCPU int64
 			var totalMemory int64
 
-			for _, container := range pod.Containers {
+			for _, container := range metric.Containers {
 
 				totalCPU +=
 					container.
@@ -111,24 +129,19 @@ func GetPodMetrics(
 						Value()
 			}
 
-			podInfo, err := clientset.
-				CoreV1().
-				Pods(pod.Namespace).
-				Get(
-					context.TODO(),
-					pod.Name,
-					metav1.GetOptions{},
-				)
-
-			if err != nil {
-				continue
+			metricMap[key] = gin.H{
+				"cpu":    float64(totalCPU) / 1000,
+				"memory": float64(totalMemory) / (1024 * 1024),
 			}
+		}
+
+		var podMetrics []gin.H
+
+		for _, pod := range pods.Items {
 
 			var containers []gin.H
 
-			for _, container := range podInfo.
-				Spec.
-				Containers {
+			for _, container := range pod.Spec.Containers {
 
 				containers = append(
 					containers,
@@ -141,36 +154,43 @@ func GetPodMetrics(
 
 			restartCount := int32(0)
 
-			for _, status := range podInfo.
-				Status.
-				ContainerStatuses {
+			status := string(pod.Status.Phase)
 
-				restartCount +=
-					status.RestartCount
+			for _, cs := range pod.Status.ContainerStatuses {
+
+				restartCount += cs.RestartCount
+
+				if cs.State.Waiting != nil {
+					status = cs.State.Waiting.Reason
+				}
+
+				if cs.State.Terminated != nil {
+					status = cs.State.Terminated.Reason
+				}
+			}
+
+			cpu := 0.0
+			memory := 0.0
+
+			key := pod.Namespace + "/" + pod.Name
+
+			if metric, ok := metricMap[key]; ok {
+
+				m := metric.(gin.H)
+
+				cpu = m["cpu"].(float64)
+				memory = m["memory"].(float64)
 			}
 
 			podMetrics = append(
 				podMetrics,
 				gin.H{
-					"name":      pod.Name,
-					"namespace": pod.Namespace,
-
-					"node": podInfo.
-						Spec.
-						NodeName,
-
-					"status": string(
-						podInfo.Status.Phase,
-					),
-
-					"cpuCores": float64(
-						totalCPU,
-					) / 1000,
-
-					"memoryMB": float64(
-						totalMemory,
-					) / (1024 * 1024),
-
+					"name":         pod.Name,
+					"namespace":    pod.Namespace,
+					"node":         pod.Spec.NodeName,
+					"status":       status,
+					"cpuCores":     cpu,
+					"memoryMB":     memory,
 					"restartCount": restartCount,
 					"containers":   containers,
 				},

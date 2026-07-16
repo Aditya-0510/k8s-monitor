@@ -49,7 +49,7 @@ function Navbar() {
           text-sm
           text-slate-300
         ">
-          Cluster Healthy
+          Connected to Cluster
         </span>
 
       </div>

@@ -44,26 +44,32 @@ export function calculateClusterHealth(
       `High memory usage detected`
     )
   }
+  const unhealthyStates = [
+  "Pending",
+  "Failed",
+  "ImagePullBackOff",
+  "ErrImagePull",
+  "CrashLoopBackOff",
+  "Unknown",
+]
+  const restartingPods = pods.filter((pod) =>
+  pod.restartCount > 3 &&
+  unhealthyStates.includes(pod.status)
+)
 
-  const restartingPods =
-    pods.filter(
-      (pod) => pod.restartCount > 0
-    )
+if (restartingPods.length > 0) {
 
-  if (restartingPods.length > 0) {
+  score -= restartingPods.length * 5
 
-    score -= restartingPods.length * 5
+  alerts.push(
+    `${restartingPods.length} unhealthy pod(s) restarting`
+  )
+}
 
-    alerts.push(
-      `${restartingPods.length} pod(s) restarting`
-    )
-  }
 
-  const failedPods =
-    pods.filter(
-      (pod) =>
-        pod.status !== "Running"
-    )
+  const failedPods = pods.filter((pod) =>
+  unhealthyStates.includes(pod.status)
+)
 
   if (failedPods.length > 0) {
 

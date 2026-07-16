@@ -88,10 +88,7 @@ function PodTable({
 
             {pods.map((pod) => {
 
-              const status =
-                pod.cpuCores > 0.05
-                  ? "Warning"
-                  : "Healthy"
+              const status = pod.status;
 
               return (
 
@@ -103,7 +100,7 @@ function PodTable({
                       name: pod.name,
                       namespace: pod.namespace,
                       node: pod.node,
-                      status: status,
+                      status: pod.status,
                       cpuCores: pod.cpuCores,
                       memoryMB: pod.memoryMB,
                       restartCount: pod.restartCount,

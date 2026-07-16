@@ -46,41 +46,71 @@ export function generateAlerts(
     }
   })
 
-  pods.forEach((pod) => {
+  // pods.forEach((pod) => {
 
-    if (pod.restartCount > 0) {
+  //   if (pod.restartCount > 0) {
 
-      alerts.push({
-        id: crypto.randomUUID(),
+  //     alerts.push({
+  //       id: crypto.randomUUID(),
 
-        severity: "critical",
+  //       severity: "critical",
 
-        message:
-          `${pod.name} restarting frequently`,
+  //       message:
+  //         `${pod.name} restarting frequently`,
 
-        timestamp:
-          new Date().toLocaleTimeString(),
-      })
-    }
-  })
+  //       timestamp:
+  //         new Date().toLocaleTimeString(),
+  //     })
+  //   }
+  // })
 
-  pods.forEach((pod) => {
+  const unhealthyStates = [
+  "Pending",
+  "ImagePullBackOff",
+  "ErrImagePull",
+  "CrashLoopBackOff",
+  "Failed",
+  "Unknown",
+]
 
-    if (pod.status !== "Running") {
+pods.forEach((pod) => {
 
-      alerts.push({
-        id: crypto.randomUUID(),
+  if (
+    pod.restartCount > 3 &&
+    unhealthyStates.includes(pod.status)
+  ) {
 
-        severity: "critical",
+    alerts.push({
+      id: crypto.randomUUID(),
 
-        message:
-          `${pod.name} unhealthy (${pod.status})`,
+      severity: "critical",
 
-        timestamp:
-          new Date().toLocaleTimeString(),
-      })
-    }
-  })
+      message:
+        `${pod.name} has restarted ${pod.restartCount} times`,
+
+      timestamp:
+        new Date().toLocaleTimeString(),
+    })
+  }
+})
+
+pods.forEach((pod) => {
+
+  if (unhealthyStates.includes(pod.status)) {
+
+    alerts.push({
+      id: crypto.randomUUID(),
+
+      severity: "critical",
+
+      message:
+        `${pod.name} unhealthy (${pod.status})`,
+
+      timestamp:
+        new Date().toLocaleTimeString(),
+    })
+  }
+})
 
   deployments.forEach((deployment) => {
 

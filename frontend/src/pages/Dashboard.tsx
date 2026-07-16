@@ -43,10 +43,18 @@ function Dashboard() {
         </div>
 
         <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 px-5 py-3 rounded-2xl">
-          <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"/>
+          <div
+            className={`w-3 h-3 rounded-full animate-pulse ${
+              health.status === "Healthy"
+                ? "bg-green-500"
+                : health.status === "Warning"
+                ? "bg-yellow-500"
+                : "bg-red-500"
+            }`}
+          />
 
           <span className="text-sm text-slate-300">
-            Cluster Healthy
+            Cluster {health.status}
           </span>
         </div>
       </div>

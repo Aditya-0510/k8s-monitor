@@ -20,9 +20,13 @@ function useClusterEvents() {
     useState<ClusterEvent[]>([])
 
   useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL
+    const wsUrl = apiUrl
+    .replace("https://", "wss://")
+    .replace("http://", "ws://")
 
     const socket = new WebSocket(
-      "ws://localhost:3000/ws/events"
+      `${wsUrl}/ws/events`
     )
 
     socket.onmessage = (event) => {
